@@ -2,10 +2,10 @@
 import re
 
 class SongDataExtractor:
-  POTENTIAL_DELIMITERS = ['-']
+  POTENTIAL_DELIMITERS = ['-', '~', '|']
 
-  STRIPPABLE_TOKENS = ['\(.+\)', '\[.+\]', '\(.+\)']
-  STRIP_EXCEPTIONS  = ['f(ea)?t(uring)?\.? .+']
+  STRIPPABLE_TOKENS = ['\([^\)]+\)', '\[[^\]]+\]']
+  STRIP_EXCEPTIONS  = ['f(ea)?t(uring)?\.? .+', '.+ remix']
 
   # Extract metadata from a string
   def information(self, string):
@@ -17,7 +17,8 @@ class SongDataExtractor:
 
   def normalize(self, string):
     string = self.clear_tokens(string)
-    string = string.rstrip()
+    string = string.strip()
+    string = string.title()
 
     return string
 
@@ -30,15 +31,13 @@ class SongDataExtractor:
 
   def clear_tokens(self, string):
     for token in self.STRIPPABLE_TOKENS:
-      match_result = re.match(token, string)
+      match_result = re.search(token, string)
       if match_result != None:
-        print "Found a token match to remove"
         innards = match_result.group(0)
         remove_match = True
         
         for exception in self.STRIP_EXCEPTIONS:
           if re.match(exception, innards):
-            print "But it's an exception"
             replace = False
             break
         
