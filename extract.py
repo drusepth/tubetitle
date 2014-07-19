@@ -10,8 +10,10 @@ class SongDataExtractor:
   # Extract metadata from a string
   def information(self, string):
     string    = self.normalize(string)
+    string    = self.clear_tokens(string)
     delimiter = self.find_delimiter(string)
     chunks    = map(lambda x:self.normalize(x), string.split(delimiter, 2))
+    chunks    = self.put_artist_first(chunks)
 
     return chunks
 
@@ -20,7 +22,6 @@ class SongDataExtractor:
     return [chunks[0], chunks[1]]
 
   def normalize(self, string):
-    string = self.clear_tokens(string)
     string = string.strip()
     string = string.title()
 
@@ -35,25 +36,27 @@ class SongDataExtractor:
 
   def clear_tokens(self, string):
     for token in self.STRIPPABLE_TOKENS:
-      match_result = re.search(token, string)
+      match_result = re.search(token, string, re.IGNORECASE)
+
       if match_result != None:
         innards = match_result.group(0)
+
         remove_match = True
-        
         for exception in self.STRIP_EXCEPTIONS:
-          if re.match(exception, innards):
-            replace = False
+          if re.search(exception, innards, re.IGNORECASE) != None:
+            remove_match = False
             break
         
-        if remove_match:
-          string = re.sub(token, '', string)
+        if remove_match == True:
+          string = re.sub(token, '', string, re.IGNORECASE)
           string = self.clear_tokens(string)
 
     return string
 
-titles = open('titles.txt', 'r')
+titles = open('test.txt', 'r')
 extract = SongDataExtractor()
 
 for title in titles:
-  print title
+  print title.strip()
   print extract.information(title)
+  print '-------------------------'
