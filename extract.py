@@ -5,7 +5,7 @@ class SongDataExtractor:
   POTENTIAL_DELIMITERS = ['-', '~', '|']
 
   STRIPPABLE_TOKENS = ['\([^\)]+\)', '\[[^\]]+\]']
-  STRIP_EXCEPTIONS  = ['f(ea)?t(uring)?\.? .+', '.+ remix', '.+ version']
+  STRIP_EXCEPTIONS  = ['f(ea)?t(uring)?\.? .+', '.+ remix', '.+ version', 'explicit']
 
   # Extract metadata from a string
   def information(self, string):
