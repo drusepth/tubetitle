@@ -11,9 +11,13 @@ class SongDataExtractor:
   def information(self, string):
     string    = self.normalize(string)
     delimiter = self.find_delimiter(string)
-    chunks    = string.split(delimiter, 2)
+    chunks    = map(lambda x:self.normalize(x), string.split(delimiter, 2))
 
     return chunks
+
+  def put_artist_first(self, chunks):
+    # todo
+    return [chunks[0], chunks[1]]
 
   def normalize(self, string):
     string = self.clear_tokens(string)
