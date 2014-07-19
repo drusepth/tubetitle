@@ -19,7 +19,7 @@ class SongDataExtractor:
 
   def put_artist_first(self, chunks):
     # todo
-    return [chunks[0], chunks[1]]
+    return [chunks[0], chunks[1]] if len(chunks) > 1 else chunks
 
   def normalize(self, string):
     string = string.strip()
@@ -32,7 +32,7 @@ class SongDataExtractor:
       if string.count(symbol) == 1:
         return symbol
     
-    return "UNKNOWN"
+    return "IMPOSSIBLE STRING THAT WILL NEVER APPEAR IN A YOUTUBE TITLE"
 
   def clear_tokens(self, string):
     for token in self.STRIPPABLE_TOKENS:
@@ -47,16 +47,14 @@ class SongDataExtractor:
             remove_match = False
             break
         
-        if remove_match == True:
+        if remove_match:
           string = re.sub(token, '', string, re.IGNORECASE)
           string = self.clear_tokens(string)
 
     return string
 
-titles = open('test.txt', 'r')
+titles = open('titles.txt', 'r')
 extract = SongDataExtractor()
 
 for title in titles:
-  print title.strip()
-  print extract.information(title)
-  print '-------------------------'
+  print title.strip(), "\t\t\t\t", extract.information(title)
